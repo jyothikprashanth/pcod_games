@@ -47,6 +47,18 @@
   }
   .box:active{transform:scale(0.92);box-shadow:inset 0 2px 8px rgba(0,0,0,0.5),0 0 25px rgba(255,255,100,0.4)}
   .box.disabled{opacity:0.6;cursor:not-allowed}
+  
+  /* Answered box styling */
+  .box.answered{
+    background:linear-gradient(135deg, #22c55e, #16a34a);
+    border-color:#22c55e;
+    box-shadow:0 12px 30px rgba(34,197,94,0.5);
+  }
+  .box.answered .num{
+    color:#fff;
+    text-shadow:0 0 10px rgba(34,197,94,0.8);
+  }
+  
   .box div{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%}
   .box .num{font-weight:900;color:#ffff66;font-size:1.8rem;text-shadow:0 0 15px rgba(255,255,100,0.7);letter-spacing:1px}
   .box .state{font-size:0.65rem;margin-top:4px;color:#c0e8ff;font-weight:600;display:none}
@@ -421,6 +433,7 @@
       for(let i = 0; i < TOTAL; i++){
         const box = document.createElement('div');
         box.className = 'box';
+        if(answered[i]) box.classList.add('answered');
         box.setAttribute('role', 'button');
         box.setAttribute('tabindex', '0');
         box.dataset.idx = i;
@@ -501,6 +514,10 @@
       const correct = selected === QUESTIONS[currentIdx].a;
       if(correct) score++;
       answered[currentIdx] = true;
+      
+      // Mark the box as answered with green color
+      const boxes = document.querySelectorAll('.box');
+      boxes[currentIdx].classList.add('answered');
       
       explanation.innerHTML = `<strong>${correct ? '✓ Correct!' : '✗ Incorrect'}</strong><br>${QUESTIONS[currentIdx].explain}`;
       explanation.className = `explain ${correct ? 'result-ok' : 'result-bad'}`;
