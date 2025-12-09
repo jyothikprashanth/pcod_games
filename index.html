@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PCOD True / False — Knowledge Game</title>
+<style>
+  :root{
+    --bg-orange: #e89b59;
+    --bg-dark: #2d1b4e;
+    --accent: #7dd3fc;
+    --accent-2: #f472b6;
+    --muted: #d1e8f6;
+    --ok: #22c55e;
+    --bad: #ef4444;
+    --radius:14px;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+
+  /* Orange gradient background with body illustration overlay */
+  html,body{height:100vh;margin:0;background:#fff;color:#fff;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;overflow:hidden}
+  .bg{
+    position:fixed;inset:0;z-index:-2;
+    background:linear-gradient(180deg, #f5a76a 0%, #f08a47 40%, #e27a4a 100%);
+  }
+  .bg svg{position:absolute;inset:0;width:100%;height:100%;opacity:0.3;object-fit:cover;filter:drop-shadow(0 8px 30px rgba(0,0,0,0.2));}
+
+  .wrap{
+    display:flex;flex-direction:column;gap:0;max-width:95%;width:100%;height:auto;background:linear-gradient(180deg, transparent 0%, rgba(217,168,117,0.4) 100%);border-radius:16px;padding:0;box-sizing:border-box;box-shadow:0 25px 80px rgba(0,0,0,0.5);
+  }
+  header{display:flex;align-items:center;gap:20px;flex-direction:row;justify-content:space-between;text-align:center;padding:18px 25px;background:rgba(45,27,78,0.8);border-bottom:2px solid rgba(255,255,100,0.25);min-height:auto;border-radius:16px 16px 0 0;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
+  header h1{font-size:1rem;margin:0;color:#fff;font-weight:700;letter-spacing:0;text-shadow:none}
+  header .badge{background:#ffff66;color:#2d1b4e;padding:10px 16px;border-radius:8px;font-weight:900;margin-left:auto;font-size:1rem;box-shadow:0 4px 12px rgba(255,255,100,0.3)}
+  p.lead{display:none}
+  h1{font-size:1.2rem;margin:0;color:#fff;font-weight:800;letter-spacing:-0.5px;text-shadow:2px 2px 4px rgba(0,0,0,0.3)}
+  p.lead{margin:0;color:#fff;font-size:0.85rem;line-height:1.3;text-shadow:1px 1px 2px rgba(0,0,0,0.2)}
+
+  main{margin-top:0;display:flex;flex-direction:column;gap:0;align-items:stretch;position:relative;padding:0}
+
+  /* Grid of boxes - bigger and professional */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:40px;background:rgba(45,27,78,0.95);border-radius:8px;border:2px solid rgba(255,255,100,0.15);aspect-ratio:1.3;position:relative;box-shadow:0 15px 40px rgba(0,0,0,0.3)}
+
+  .box{
+    background:linear-gradient(135deg, rgba(45,27,78,0.98), rgba(70,40,90,0.95));border-radius:16px;padding:0;min-height:auto;display:flex;align-items:center;justify-content:center;text-align:center;
+    cursor:pointer;user-select:none;border:2px solid rgba(255,255,255,0.25);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    position:relative;overflow:hidden;aspect-ratio:1;box-shadow:0 12px 30px rgba(0,0,0,0.4);
+  }
+  .box:active{transform:scale(0.92);box-shadow:inset 0 2px 8px rgba(0,0,0,0.5),0 0 25px rgba(255,255,100,0.4)}
+  .box.disabled{opacity:0.6;cursor:not-allowed}
+  .box div{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%}
+  .box .num{font-weight:900;color:#ffff66;font-size:1.8rem;text-shadow:0 0 15px rgba(255,255,100,0.7);letter-spacing:1px}
+  .box .state{font-size:0.65rem;margin-top:4px;color:#c0e8ff;font-weight:600;display:none}
+
+  /* moving highlight animation with yellow glow */
+  .highlight{
+    box-shadow:0 0 30px rgba(255,255,100,1), inset 0 0 20px rgba(255,255,100,0.6), 0 0 50px rgba(255,255,100,0.5);
+    animation: pulse-glow 1100ms ease-in-out infinite;
+    background:linear-gradient(135deg, rgba(255,255,100,0.4), rgba(255,200,0,0.3));
+    border-color:rgba(255,255,100,1);
+  }
+  @keyframes pulse-glow{
+    0%{transform:scale(1);box-shadow:0 0 30px rgba(255,255,100,1), inset 0 0 20px rgba(255,255,100,0.6), 0 0 50px rgba(255,255,100,0.5)}
+    50%{transform:scale(1.08);box-shadow:0 0 40px rgba(255,255,100,1), inset 0 0 30px rgba(255,255,100,0.8), 0 0 70px rgba(255,255,100,0.7)}
+    100%{transform:scale(1);box-shadow:0 0 30px rgba(255,255,100,1), inset 0 0 20px rgba(255,255,100,0.6), 0 0 50px rgba(255,255,100,0.5)}
+  }
+
+  /* Page views */
+  .page{display:none}
+  .page.active{display:block}
+  
+  /* Questions page - modal centered */
+  .page-question{
+    position:fixed;inset:0;background:linear-gradient(180deg, #d9a875 0%, #e89b59 50%, #d9a875 100%);
+    z-index:50;padding:20px;box-sizing:border-box;overflow-y:auto;display:none;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .page-question.active{
+    display:flex;
+  }
+
+  .question-header{
+    display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px;padding-bottom:15px;border-bottom:2px solid rgba(255,255,255,0.2);width:100%;
+  }
+  .question-header h2{margin:0;color:#2d1b4e;font-size:1.2rem;font-weight:700}
+
+  .question-progress-header{
+    display:flex;justify-content:center;align-items:center;margin-bottom:30px;gap:0;padding:12px 24px;background:linear-gradient(135deg, #2d1b4e, #3d2b5e);border-radius:10px;font-size:1.5rem;color:#ffff66;font-weight:900;border:2px solid rgba(255,255,100,0.4);box-shadow:0 6px 20px rgba(0,0,0,0.3);text-align:center;letter-spacing:2px;width:auto;
+  }
+
+  .question-progress{
+    background:linear-gradient(135deg, #2d1b4e, #3d2b5e);padding:8px 16px;border-radius:8px;font-size:1.1rem;color:#ffff66;font-weight:800;border:2px solid rgba(255,255,100,0.4);box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  .question-container{
+    background:linear-gradient(135deg, rgba(45,27,78,0.9), rgba(70,40,90,0.85));border:2px solid rgba(255,255,255,0.15);border-radius:16px;padding:30px;max-width:50%;width:100%;max-height:auto;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  .question-text{
+    color:#fff;font-size:1.15rem;line-height:1.8;margin-bottom:24px;font-weight:600;text-shadow:1px 1px 2px rgba(0,0,0,0.2);
+  }
+
+  .choices-container{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+  
+  .choice-btn{
+    padding:16px 20px;border-radius:12px;border:none;background:linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));color:#fff;font-weight:800;font-size:1.05rem;cursor:pointer;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);text-align:center;box-shadow:0 6px 20px rgba(0,0,0,0.25);text-transform:uppercase;letter-spacing:1px;
+  }
+
+  .choice-btn:active{transform:scale(0.95)}
+
+  /* True button - Green */
+  .choice-btn[data-val="true"]{
+    background:linear-gradient(135deg, #22c55e, #16a34a);
+    color:#fff;
+    box-shadow:0 8px 25px rgba(34,197,94,0.5);
+  }
+  .choice-btn[data-val="true"]:active{
+    box-shadow:0 4px 15px rgba(34,197,94,0.4);
+  }
+  
+  /* False button - Red */
+  .choice-btn[data-val="false"]{
+    background:linear-gradient(135deg, #ef4444, #dc2626);
+    color:#fff;
+    box-shadow:0 8px 25px rgba(239,68,68,0.5);
+  }
+  .choice-btn[data-val="false"]:active{
+    box-shadow:0 4px 15px rgba(239,68,68,0.4);
+  }
+
+  .choice-btn.selected{
+    transform:scale(1.05);
+    box-shadow:0 10px 35px rgba(255,255,100,0.6);
+  }
+  
+  .choice-btn[data-val="true"].selected{
+    box-shadow:0 10px 35px rgba(34,197,94,0.8);
+  }
+  
+  .choice-btn[data-val="false"].selected{
+    box-shadow:0 10px 35px rgba(239,68,68,0.8);
+  }
+
+  .button-group{display:flex;gap:12px;margin-top:16px;flex-direction:column}
+
+  .btn{
+    background:linear-gradient(135deg, #c85a4a, #9c4335);
+    color:#fff;border:none;padding:16px 20px;border-radius:12px;font-weight:800;cursor:pointer;font-size:1rem;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);flex:1;
+    box-shadow:0 8px 25px rgba(200,90,74,0.4);
+    text-transform:uppercase;letter-spacing:1px;
+  }
+  .btn:active{transform:scale(0.92);box-shadow:0 4px 15px rgba(200,90,74,0.3)}
+
+  .btn.ghost{
+    background:linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
+    color:#fff;border:2px solid rgba(255,255,255,0.3);
+    box-shadow:0 6px 20px rgba(0,0,0,0.25);
+  }
+  .btn.ghost:active{background:linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.12));border-color:rgba(255,255,255,0.4)}
+
+  .explain{
+    margin-top:16px;padding:16px;border-radius:12px;background:linear-gradient(135deg, rgba(45,27,78,0.8), rgba(70,40,90,0.7));
+    color:#fff;font-size:0.95rem;line-height:1.7;border-left:4px solid #ffff66;box-shadow:0 6px 20px rgba(0,0,0,0.2);
+  }
+
+  .result-banner{padding:12px;border-radius:10px;margin-top:12px;font-weight:700}
+  .result-ok{background:linear-gradient(90deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04));color:#22c55e}
+  .result-bad{background:linear-gradient(90deg, rgba(239,68,68,0.10), rgba(239,68,68,0.02));color:#ef4444}
+
+  /* footer summary overlay */
+  .overlay{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg, #d9a875 0%, #e89b59 50%, #d9a875 100%);z-index:60;padding:16px;box-sizing:border-box;opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  .overlay.show{opacity:1;pointer-events:auto}
+  
+  .card-centered{
+    background:linear-gradient(135deg, rgba(45,27,78,0.9), rgba(70,40,90,0.85));
+    padding:20px;border-radius:16px;max-width:90%;width:100%;text-align:center;border:2px solid rgba(255,255,255,0.2);box-shadow:0 8px 30px rgba(0,0,0,0.3);
+  }
+
+  .final-score{
+    font-size:2.5rem;font-weight:900;color:#ffff66;margin:16px 0;text-shadow:0 0 20px rgba(255,255,100,0.5);
+  }
+
+  .final-message{font-size:0.95rem;color:#fff;line-height:1.7;margin:12px 0;text-shadow:1px 1px 2px rgba(0,0,0,0.2)}
+
+  .level-badge{
+    display:inline-block;margin-top:14px;padding:12px 18px;border-radius:12px;background:linear-gradient(135deg, rgba(255,255,100,0.2), rgba(255,200,0,0.15));
+    color:#ffff66;font-weight:800;font-size:0.92rem;border:1px solid rgba(255,255,100,0.4);text-transform:uppercase;letter-spacing:0.5px;box-shadow:0 4px 12px rgba(255,255,100,0.2);
+  }
+
+  /* small */
+  .small{font-size:0.86rem;color:var(--muted)}
+  .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);font-weight:700;color:var(--muted)}
+
+  /* START PAGE */
+  .page-start{
+    background:linear-gradient(180deg, #d9a875 0%, #e89b59 50%, #d9a875 100%);
+    min-height:100vh;display:none;position:fixed;inset:0;z-index:40;align-items:center;justify-content:center;
+  }
+  .page-start.active{
+    display:flex !important;
+  }
+  .start-container{
+    text-align:center;padding:20px;max-width:90%;width:100%;
+  }
+  .body-icon{
+    width:120px;height:120px;margin:0 auto 20px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.2));animation:float-icon 3s ease-in-out infinite;
+  }
+  @keyframes float-icon{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-15px)}
+  }
+
+  /* MENU PAGE */
+  .page-menu{
+    background:linear-gradient(180deg, #d9a875 0%, #e89b59 50%, #d9a875 100%);
+    min-height:100vh;display:none;position:fixed;inset:0;z-index:40;align-items:center;justify-content:center;
+  }
+  .page-menu.active{
+    display:flex !important;
+  }
+  .menu-container{
+    text-align:center;padding:20px;max-width:50%;width:100%;
+  }
+  .menu-buttons{
+    display:flex;flex-direction:column;gap:14px;margin-top:30px;
+  }
+  .menu-btn{
+    display:flex;align-items:center;justify-content:flex-start;gap:16px;padding:18px 16px;border-radius:16px;border:none;
+    background:linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.05));
+    color:#fff;font-weight:700;font-size:1.05rem;cursor:pointer;
+    transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow:0 6px 20px rgba(0,0,0,0.2);border:2px solid rgba(255,255,255,0.1);
+  }
+  .menu-btn:active{transform:scale(0.95);box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+  .menu-icon{
+    font-size:2rem;display:flex;align-items:center;justify-content:center;width:50px;height:50px;
+    background:linear-gradient(135deg, rgba(45,27,78,0.8), rgba(70,40,90,0.7));
+    border-radius:12px;border:2px solid rgba(255,255,100,0.3);flex-shrink:0;
+  }
+  .menu-text{text-align:left;flex:1}
+
+  /* Specific menu button colors */
+  .menu-btn:nth-child(1){background:linear-gradient(135deg, #4ade80, rgba(74,222,128,0.2));box-shadow:0 6px 20px rgba(74,222,128,0.3)}
+  .menu-btn:nth-child(2){background:linear-gradient(135deg, #f87171, rgba(239,68,68,0.2));box-shadow:0 6px 20px rgba(239,68,68,0.3)}
+  .menu-btn:nth-child(3){background:linear-gradient(135deg, #7dd3fc, rgba(125,211,252,0.2));box-shadow:0 6px 20px rgba(125,211,252,0.3)}
+  .menu-btn:nth-child(4){background:linear-gradient(135deg, #d4af37, rgba(212,175,55,0.2));box-shadow:0 6px 20px rgba(212,175,55,0.3)}
+</style>
+</head>
+<body>
+  <div class="bg">
+    <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- Wave curves like pancreatic cancer reference -->
+      <path d="M0,200 Q300,100 600,150 T1200,200 L1200,0 L0,0 Z" fill="#d96a3a" opacity="0.4"/>
+      <path d="M0,300 Q400,150 800,250 T1200,350 L1200,0 L0,0 Z" fill="#c85a4a" opacity="0.3"/>
+      <path d="M0,450 Q300,350 600,420 T1200,500 L1200,0 L0,0 Z" fill="#b8474a" opacity="0.25"/>
+      
+      <!-- Body illustration elements -->
+      <g fill="none" stroke="#fff" stroke-width="2" opacity="0.4">
+        <path d="M600 150c-40 0-80 20-100 50-20 30-30 70-30 120" />
+        <path d="M600 150c40 0 80 20 100 50 20 30 30 70 30 120" />
+      </g>
+    </svg>
+  </div>
+
+  <!-- START PAGE -->
+  <div id="page-start" class="page page-start active">
+    <div class="start-container">
+      <svg class="body-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="20" r="12" fill="#ffff66"/>
+        <path d="M50 32 L50 60" stroke="#ffff66" stroke-width="3" stroke-linecap="round"/>
+        <path d="M50 40 L35 50" stroke="#ffff66" stroke-width="3" stroke-linecap="round"/>
+        <path d="M50 40 L65 50" stroke="#ffff66" stroke-width="3" stroke-linecap="round"/>
+        <path d="M50 60 L38 85" stroke="#ffff66" stroke-width="3" stroke-linecap="round"/>
+        <path d="M50 60 L62 85" stroke="#ffff66" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <h1 style="font-size:2.2rem;margin:20px 0;color:#ffff66">PCOD Awareness</h1>
+      <p style="font-size:1.1rem;margin-bottom:12px;color:#fff;line-height:1.6">Test your knowledge about Polycystic Ovarian Disease with quick true/false questions.</p>
+      <p style="font-size:0.95rem;margin-bottom:30px;color:#ddd">Educational Quiz • 10 Questions • ~5 Minutes</p>
+      <button id="startBtn" class="btn" style="font-size:1.1rem;padding:14px 40px">Let's Play</button>
+    </div>
+  </div>
+
+  <!-- MENU PAGE -->
+  <div id="page-menu" class="page page-menu">
+    <div class="menu-container">
+      <h1 style="font-size:2rem;margin-bottom:40px;color:#ffff66">PCOD Game</h1>
+      <div class="menu-buttons">
+        <button id="playBtn" class="menu-btn">
+          <div class="menu-icon">▶</div>
+          <div class="menu-text">Play Quiz</div>
+        </button>
+        <button id="rulesBtn" class="menu-btn">
+          <div class="menu-icon">📋</div>
+          <div class="menu-text">How to Play</div>
+        </button>
+        <button id="aboutBtn" class="menu-btn">
+          <div class="menu-icon">ℹ</div>
+          <div class="menu-text">About PCOD</div>
+        </button>
+        <button id="creditsBtn" class="menu-btn">
+          <div class="menu-icon">⭐</div>
+          <div class="menu-text">Credits</div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOME PAGE - BOXES -->
+  <div id="page-home" class="page">
+    <div class="wrap" role="application" aria-label="PCOD True False game">
+      <header>
+        <h1>Score</h1>
+        <div class="badge"><span id="score">0</span> / <span id="total">10</span></div>
+      </header>
+
+      <main>
+        <section class="grid" id="grid" aria-live="polite">
+          <!-- 10 boxes inserted by JS -->
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- QUESTION PAGE - FULL SCREEN -->
+  <div id="page-question" class="page page-question">
+    <div class="question-progress-header">
+      <span id="q-progress">1</span> / <span id="q-total">10</span>
+    </div>
+
+    <div class="question-container">
+      <div class="question-text" id="questionText"></div>
+
+      <div class="choices-container">
+        <button class="choice-btn" data-val="true">✓ True</button>
+        <button class="choice-btn" data-val="false">✗ False</button>
+      </div>
+
+      <div class="button-group">
+        <button id="submitBtn" class="btn">Submit Answer</button>
+        <button id="cancelBtn" class="btn ghost">Skip</button>
+      </div>
+
+      <div id="explanation" class="explain" style="display:none"></div>
+      <button id="continueBtn" class="btn" style="display:none;margin-top:20px">Continue →</button>
+    </div>
+  </div>
+
+  <!-- FINAL RESULT OVERLAY -->
+  <div id="overlay" class="overlay">
+    <div class="card-centered">
+      <h2 style="color:var(--accent);font-size:1.4rem;margin-bottom:12px">Quiz Complete!</h2>
+      <div class="final-score"><span id="finalScore">0</span>%</div>
+      <div class="final-message" id="finalMessage">Great effort! Keep learning about PCOD.</div>
+      <div class="level-badge" id="levelBadge">Good Knowledge</div>
+      <button id="restartBtn" class="btn" style="margin-top:24px">Take Quiz Again</button>
+    </div>
+  </div>
+
+  <script>
+    /* ===== QUESTIONS DATA ===== */
+    const QUESTIONS = [
+      { q: "PCOD affects only women in their reproductive years.", a: false, explain: "PCOD can develop at any age after puberty, including during menopause. Symptoms and severity may vary across different life stages." },
+      { q: "Insulin resistance is a common factor in PCOD.", a: true, explain: "About 70% of women with PCOD have insulin resistance, which can contribute to weight gain, irregular periods, and other symptoms." },
+      { q: "PCOD can affect fertility.", a: true, explain: "PCOD is one of the leading causes of infertility in women due to irregular ovulation. However, many women with PCOD successfully conceive with proper treatment." },
+      { q: "There is a cure for PCOD.", a: false, explain: "Currently, there is no cure for PCOD, but symptoms can be managed effectively through lifestyle changes, medication, and proper medical care." },
+      { q: "Excess androgen (male hormones) is a hallmark of PCOD.", a: true, explain: "High levels of androgens cause hirsutism (excess hair), acne, and male-pattern baldness in many women with PCOD." },
+      { q: "Diet has no impact on PCOD symptoms.", a: false, explain: "A balanced diet low in refined carbohydrates and high in fiber can significantly help manage PCOD symptoms and improve insulin sensitivity." },
+      { q: "PCOD is caused by being overweight.", a: false, explain: "While obesity can worsen PCOD symptoms, lean women can also have PCOD. It's a hormonal disorder, not solely weight-related." },
+      { q: "Regular exercise can help manage PCOD symptoms.", a: true, explain: "Physical activity improves insulin sensitivity, helps with weight management, and can regulate menstrual cycles in women with PCOD." },
+      { q: "Stress has no effect on PCOD.", a: false, explain: "Chronic stress elevates cortisol levels, which can worsen hormonal imbalances and PCOD symptoms. Stress management is important." },
+      { q: "Early diagnosis and management can prevent complications of PCOD.", a: true, explain: "Early intervention can reduce the risk of type 2 diabetes, heart disease, and other PCOD-related complications." }
+    ];
+
+    const TOTAL = QUESTIONS.length;
+    let currentIdx = 0;
+    let answered = new Array(TOTAL).fill(false);
+    let score = 0;
+    let cycleIndex = 0;
+    let cycleInterval = null;
+    let selected = null;
+
+    /* ===== DOM ELEMENTS ===== */
+    const pageHome = document.getElementById('page-home');
+    const pageQuestion = document.getElementById('page-question');
+    const pageStart = document.getElementById('page-start');
+    const pageMenu = document.getElementById('page-menu');
+    const grid = document.getElementById('grid');
+    const scoreEl = document.getElementById('score');
+    const totalEl = document.getElementById('total');
+    const questionText = document.getElementById('questionText');
+    const qProgress = document.getElementById('q-progress');
+    const qTotal = document.getElementById('q-total');
+    const choiceBtns = document.querySelectorAll('.choice-btn');
+    const submitBtn = document.getElementById('submitBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const explanation = document.getElementById('explanation');
+    const continueBtn = document.getElementById('continueBtn');
+    const overlay = document.getElementById('overlay');
+    const finalScore = document.getElementById('finalScore');
+    const finalMessage = document.getElementById('finalMessage');
+    const levelBadge = document.getElementById('levelBadge');
+    const restartBtn = document.getElementById('restartBtn');
+    const startBtn = document.getElementById('startBtn');
+    const playBtn = document.getElementById('playBtn');
+    const rulesBtn = document.getElementById('rulesBtn');
+    const aboutBtn = document.getElementById('aboutBtn');
+    const creditsBtn = document.getElementById('creditsBtn');
+
+    totalEl.textContent = TOTAL;
+    qTotal.textContent = TOTAL;
+
+    /* ===== PAGE NAVIGATION ===== */
+    function showPage(pageEl){
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      pageEl.classList.add('active');
+    }
+
+    /* ===== BUILD GRID ===== */
+    function buildGrid(){
+      grid.innerHTML = '';
+      for(let i = 0; i < TOTAL; i++){
+        const box = document.createElement('div');
+        box.className = 'box';
+        box.setAttribute('role', 'button');
+        box.setAttribute('tabindex', '0');
+        box.dataset.idx = i;
+        const stateText = answered[i] ? 'Answered' : 'Tap to answer';
+        box.innerHTML = `<div>
+                            <div class="num">Q${i+1}</div>
+                            <div class="state small">${stateText}</div>
+                         </div>`;
+        box.addEventListener('click', () => openQuestion(i));
+        box.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openQuestion(i); } });
+        grid.appendChild(box);
+      }
+    }
+
+    /* ===== CYCLING HIGHLIGHT ===== */
+    function startCycle(){
+      stopCycle();
+      const boxes = document.querySelectorAll('.box');
+      let idx = 0;
+      cycleInterval = setInterval(() => {
+        boxes.forEach((b, i) => {
+          if(!answered[i]) {
+            if(i === idx) b.classList.add('highlight');
+            else b.classList.remove('highlight');
+          }
+        });
+        idx = (idx + 1) % TOTAL;
+      }, 900);
+    }
+
+    function stopCycle(){
+      if(cycleInterval) {
+        clearInterval(cycleInterval);
+        document.querySelectorAll('.box').forEach(b => b.classList.remove('highlight'));
+      }
+    }
+
+    /* ===== OPEN QUESTION PAGE ===== */
+    function openQuestion(idx){
+      if(answered[idx]) return;
+      stopCycle();
+      currentIdx = idx;
+      selected = null;
+      
+      questionText.textContent = QUESTIONS[idx].q;
+      qProgress.textContent = idx + 1;
+      
+      choiceBtns.forEach(btn => {
+        btn.classList.remove('selected');
+        btn.onclick = () => {
+          choiceBtns.forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          selected = btn.dataset.val === 'true';
+        };
+      });
+      
+      explanation.style.display = 'none';
+      continueBtn.style.display = 'none';
+      submitBtn.style.display = 'inline-block';
+      cancelBtn.style.display = 'inline-block';
+      
+      submitBtn.onclick = submitAnswer;
+      cancelBtn.onclick = () => {
+        showPage(pageHome);
+        startCycle();
+      };
+      
+      showPage(pageQuestion);
+    }
+
+    /* ===== SUBMIT ANSWER ===== */
+    function submitAnswer(){
+      if(selected === null) {
+        alert('Please select True or False');
+        return;
+      }
+      
+      const correct = selected === QUESTIONS[currentIdx].a;
+      if(correct) score++;
+      answered[currentIdx] = true;
+      
+      explanation.innerHTML = `<strong>${correct ? '✓ Correct!' : '✗ Incorrect'}</strong><br>${QUESTIONS[currentIdx].explain}`;
+      explanation.className = `explain ${correct ? 'result-ok' : 'result-bad'}`;
+      explanation.style.display = 'block';
+      
+      submitBtn.style.display = 'none';
+      cancelBtn.style.display = 'none';
+      continueBtn.style.display = 'inline-block';
+      
+      scoreEl.textContent = score;
+      
+      continueBtn.onclick = nextQuestion;
+    }
+
+    /* ===== NEXT QUESTION ===== */
+    function nextQuestion(){
+      const remaining = answered.findIndex(a => !a);
+      if(remaining === -1) {
+        endGame();
+      } else {
+        showPage(pageHome);
+        buildGrid();
+        startCycle();
+      }
+    }
+
+    /* ===== END GAME ===== */
+    function endGame(){
+      stopCycle();
+      const percentage = Math.round((score / TOTAL) * 100);
+      finalScore.textContent = percentage;
+      
+      let level = 'Learn More';
+      let msg = 'Keep learning about PCOD to improve your knowledge.';
+      
+      if(percentage >= 80) {
+        level = 'Excellent Knowledge!';
+        msg = 'Outstanding! You have excellent knowledge about PCOD. Keep it up!';
+      } else if(percentage >= 60) {
+        level = 'Good Knowledge';
+        msg = 'Great job! You have good understanding of PCOD basics.';
+      } else if(percentage >= 40) {
+        level = 'Fair Knowledge';
+        msg = 'You have some knowledge about PCOD. Consider learning more.';
+      }
+      
+      levelBadge.textContent = level;
+      finalMessage.textContent = msg;
+      
+      overlay.classList.add('show');
+    }
+
+    /* ===== RESTART ===== */
+    function restartGame(){
+      currentIdx = 0;
+      answered = new Array(TOTAL).fill(false);
+      score = 0;
+      selected = null;
+      
+      scoreEl.textContent = '0';
+      overlay.classList.remove('show');
+      buildGrid();
+      showPage(pageHome);
+      startCycle();
+    }
+
+    restartBtn.onclick = restartGame;
+
+    /* ===== PAGE NAVIGATION HANDLERS ===== */
+    // Start page button - goes to menu
+    if(startBtn) startBtn.onclick = () => showPage(pageMenu);
+
+    // Menu buttons
+    if(playBtn) playBtn.onclick = () => {
+      console.log('Play button clicked');
+      currentIdx = 0;
+      answered = new Array(TOTAL).fill(false);
+      score = 0;
+      selected = null;
+      scoreEl.textContent = '0';
+      overlay.classList.remove('show');
+      buildGrid();
+      showPage(pageHome);
+      startCycle();
+    };
+
+    if(rulesBtn) rulesBtn.onclick = () => {
+      alert('How to Play:\n\n1. 10 questions about PCOD will appear as boxes\n2. Boxes highlight continuously in yellow\n3. Click any highlighted box to answer\n4. Select True or False\n5. Read the explanation\n6. Continue to next question\n7. See your final score and knowledge level');
+    };
+
+    if(aboutBtn) aboutBtn.onclick = () => {
+      alert('About PCOD:\n\nPolycystic Ovarian Disease (PCOD) is a hormonal disorder affecting many women of reproductive age. It can cause:\n\n• Irregular periods\n• Hormonal imbalances\n• Fertility issues\n• Metabolic complications\n\nEarly diagnosis and proper management can help reduce long-term health risks.');
+    };
+
+    if(creditsBtn) creditsBtn.onclick = () => {
+      alert('Credits:\n\nPCOD Awareness Game\n\nDesigned and developed for educational purposes to raise awareness about PCOD and help people understand this common condition.\n\nIf you suspect you have PCOD, consult with a healthcare professional for proper diagnosis and treatment.');
+    };
+
+    /* ===== INIT ===== */
+    showPage(pageStart);
+  </script>
+</body>
+</html>
