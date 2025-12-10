@@ -26,24 +26,24 @@
   .bg svg{position:absolute;inset:0;width:100%;height:100%;opacity:0.3;object-fit:cover;filter:drop-shadow(0 8px 30px rgba(0,0,0,0.2));}
 
   .wrap{
-    display:flex;flex-direction:column;gap:0;max-width:100%;width:100%;min-width:300px;height:auto;background:linear-gradient(180deg, transparent 0%, rgba(217,168,117,0.4) 100%);border-radius:16px;padding:0;box-sizing:border-box;box-shadow:0 25px 80px rgba(0,0,0,0.5);
+    display:flex;flex-direction:column;gap:0;max-width:100%;width:100%;min-width:280px;height:auto;background:linear-gradient(180deg, transparent 0%, rgba(217,168,117,0.4) 100%);border-radius:12px;padding:8px;box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,0.4);
   }
-  header{display:flex;align-items:center;gap:10px;flex-direction:row;justify-content:space-between;text-align:center;padding:14px 16px;background:rgba(45,27,78,0.8);border-bottom:2px solid rgba(255,255,100,0.25);min-height:auto;border-radius:16px 16px 0 0;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
+  header{display:flex;align-items:center;gap:10px;flex-direction:row;justify-content:space-between;text-align:center;padding:10px 12px;background:rgba(45,27,78,0.8);border-bottom:2px solid rgba(255,255,100,0.25);min-height:auto;border-radius:8px 8px 0 0;box-shadow:0 4px 15px rgba(0,0,0,0.2);box-sizing:border-box;}
   header h1{font-size:0.9rem;margin:0;color:#fff;font-weight:700;letter-spacing:0;text-shadow:none}
   header .badge{background:#ffff66;color:#2d1b4e;padding:8px 12px;border-radius:8px;font-weight:900;margin-left:auto;font-size:0.85rem;box-shadow:0 4px 12px rgba(255,255,100,0.3);white-space:nowrap}
   p.lead{display:none}
   h1{font-size:1.2rem;margin:0;color:#fff;font-weight:800;letter-spacing:-0.5px;text-shadow:2px 2px 4px rgba(0,0,0,0.3)}
   p.lead{margin:0;color:#fff;font-size:0.85rem;line-height:1.3;text-shadow:1px 1px 2px rgba(0,0,0,0.2)}
 
-  main{margin-top:0;display:flex;flex-direction:column;gap:0;align-items:stretch;position:relative;padding:0}
+  main{margin-top:0;display:flex;flex-direction:column;gap:0;align-items:stretch;position:relative;padding:0;width:100%;box-sizing:border-box;overflow:hidden}
 
   /* Grid of boxes - mobile optimized */
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:16px;background:rgba(45,27,78,0.95);border-radius:8px;border:2px solid rgba(255,255,100,0.15);aspect-ratio:1.2;position:relative;box-shadow:0 15px 40px rgba(0,0,0,0.3)}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:12px;background:rgba(45,27,78,0.95);border-radius:8px;border:2px solid rgba(255,255,100,0.15);position:relative;box-shadow:0 15px 40px rgba(0,0,0,0.3);width:100%;height:auto;box-sizing:border-box;margin:0;}
 
   .box{
-    background:linear-gradient(135deg, rgba(45,27,78,0.98), rgba(70,40,90,0.95));border-radius:12px;padding:0;min-height:auto;display:flex;align-items:center;justify-content:center;text-align:center;
+    background:linear-gradient(135deg, rgba(45,27,78,0.98), rgba(70,40,90,0.95));border-radius:8px;padding:0;min-height:auto;display:flex;align-items:center;justify-content:center;text-align:center;
     cursor:pointer;user-select:none;border:2px solid rgba(255,255,255,0.25);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-    position:relative;overflow:hidden;aspect-ratio:1;box-shadow:0 12px 30px rgba(0,0,0,0.4);
+    position:relative;overflow:hidden;aspect-ratio:1;box-shadow:0 8px 20px rgba(0,0,0,0.3);min-height:60px;
   }
   .box:active{transform:scale(0.92);box-shadow:inset 0 2px 8px rgba(0,0,0,0.5),0 0 25px rgba(255,255,100,0.4)}
   .box.disabled{opacity:0.6;cursor:not-allowed}
@@ -71,7 +71,7 @@
   }
   
   .box div{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%}
-  .box .num{font-weight:900;color:#ffff66;font-size:1.4rem;text-shadow:0 0 15px rgba(255,255,100,0.7);letter-spacing:1px}
+  .box .num{font-weight:900;color:#ffff66;font-size:1.1rem;text-shadow:0 0 15px rgba(255,255,100,0.7);letter-spacing:1px}
   .box .state{font-size:0.65rem;margin-top:4px;color:#c0e8ff;font-weight:600;display:none}
 
   /* moving highlight animation with yellow glow */
@@ -94,7 +94,7 @@
   /* Questions page - modal centered */
   .page-question{
     position:fixed;inset:0;background:linear-gradient(180deg, #d9a875 0%, #e89b59 50%, #d9a875 100%);
-    z-index:50;padding:20px;box-sizing:border-box;overflow-y:auto;display:none;flex-direction:column;align-items:center;justify-content:center;
+    z-index:50;padding:12px;box-sizing:border-box;overflow-y:auto;display:none;flex-direction:column;align-items:center;justify-content:flex-start;
   }
   .page-question.active{
     display:flex;
@@ -106,7 +106,7 @@
   .question-header h2{margin:0;color:#2d1b4e;font-size:1.2rem;font-weight:700}
 
   .question-progress-header{
-    display:flex;justify-content:center;align-items:center;margin-bottom:30px;gap:0;padding:12px 24px;background:linear-gradient(135deg, #2d1b4e, #3d2b5e);border-radius:10px;font-size:1.5rem;color:#ffff66;font-weight:900;border:2px solid rgba(255,255,100,0.4);box-shadow:0 6px 20px rgba(0,0,0,0.3);text-align:center;letter-spacing:2px;width:auto;
+    display:flex;justify-content:center;align-items:center;margin-bottom:16px;gap:10px;padding:10px 16px;background:linear-gradient(135deg, #2d1b4e, #3d2b5e);border-radius:8px;font-size:1.2rem;color:#ffff66;font-weight:900;border:2px solid rgba(255,255,100,0.4);box-shadow:0 4px 15px rgba(0,0,0,0.2);text-align:center;letter-spacing:1px;width:auto;
   }
 
   /* Timer styling */
@@ -133,17 +133,17 @@
   }
 
   .question-container{
-    background:linear-gradient(135deg, rgba(45,27,78,0.9), rgba(70,40,90,0.85));border:2px solid rgba(255,255,255,0.15);border-radius:16px;padding:30px;max-width:50%;width:100%;max-height:auto;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);
+    background:linear-gradient(135deg, rgba(45,27,78,0.9), rgba(70,40,90,0.85));border:2px solid rgba(255,255,255,0.15);border-radius:14px;padding:20px;max-width:95%;width:100%;max-height:auto;overflow-y:auto;box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,0.3);
   }
 
   .question-text{
-    color:#fff;font-size:1.15rem;line-height:1.8;margin-bottom:24px;font-weight:600;text-shadow:1px 1px 2px rgba(0,0,0,0.2);
+    color:#fff;font-size:1rem;line-height:1.6;margin-bottom:16px;font-weight:600;text-shadow:1px 1px 2px rgba(0,0,0,0.2);
   }
 
-  .choices-container{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+  .choices-container{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
   
   .choice-btn{
-    padding:16px 20px;border-radius:12px;border:none;background:linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));color:#fff;font-weight:800;font-size:1.05rem;cursor:pointer;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);text-align:center;box-shadow:0 6px 20px rgba(0,0,0,0.25);text-transform:uppercase;letter-spacing:1px;
+    padding:14px 16px;border-radius:10px;border:none;background:linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));color:#fff;font-weight:800;font-size:0.95rem;cursor:pointer;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);text-align:center;box-shadow:0 6px 20px rgba(0,0,0,0.25);text-transform:uppercase;letter-spacing:0.5px;
   }
 
   .choice-btn:active{transform:scale(0.95)}
@@ -185,9 +185,9 @@
 
   .btn{
     background:linear-gradient(135deg, #c85a4a, #9c4335);
-    color:#fff;border:none;padding:16px 20px;border-radius:12px;font-weight:800;cursor:pointer;font-size:1rem;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);flex:1;
-    box-shadow:0 8px 25px rgba(200,90,74,0.4);
-    text-transform:uppercase;letter-spacing:1px;
+    color:#fff;border:none;padding:12px 16px;border-radius:10px;font-weight:800;cursor:pointer;font-size:0.9rem;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);flex:1;
+    box-shadow:0 6px 18px rgba(200,90,74,0.3);
+    text-transform:uppercase;letter-spacing:0.5px;
   }
   .btn:active{transform:scale(0.92);box-shadow:0 4px 15px rgba(200,90,74,0.3)}
 
@@ -199,8 +199,8 @@
   .btn.ghost:active{background:linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.12));border-color:rgba(255,255,255,0.4)}
 
   .explain{
-    margin-top:16px;padding:16px;border-radius:12px;background:linear-gradient(135deg, rgba(45,27,78,0.8), rgba(70,40,90,0.7));
-    color:#fff;font-size:0.95rem;line-height:1.7;border-left:4px solid #ffff66;box-shadow:0 6px 20px rgba(0,0,0,0.2);
+    margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(135deg, rgba(45,27,78,0.8), rgba(70,40,90,0.7));
+    color:#fff;font-size:0.9rem;line-height:1.6;border-left:3px solid #ffff66;box-shadow:0 4px 15px rgba(0,0,0,0.2);
   }
 
   .result-banner{padding:12px;border-radius:10px;margin-top:12px;font-weight:700}
