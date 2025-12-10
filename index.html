@@ -18,7 +18,7 @@
   }
 
   /* Orange gradient background with body illustration overlay */
-  html,body{height:100vh;margin:0;background:#fff;color:#fff;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;overflow:hidden}
+  html,body{height:100vh;margin:0;background:#fff;color:#fff;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;display:flex;align-items:center;justify-content:center;padding:10px;box-sizing:border-box;overflow:auto}
   .bg{
     position:fixed;inset:0;z-index:-2;
     background:linear-gradient(180deg, #f5a76a 0%, #f08a47 40%, #e27a4a 100%);
@@ -26,22 +26,22 @@
   .bg svg{position:absolute;inset:0;width:100%;height:100%;opacity:0.3;object-fit:cover;filter:drop-shadow(0 8px 30px rgba(0,0,0,0.2));}
 
   .wrap{
-    display:flex;flex-direction:column;gap:0;max-width:95%;width:100%;height:auto;background:linear-gradient(180deg, transparent 0%, rgba(217,168,117,0.4) 100%);border-radius:16px;padding:0;box-sizing:border-box;box-shadow:0 25px 80px rgba(0,0,0,0.5);
+    display:flex;flex-direction:column;gap:0;max-width:100%;width:100%;min-width:300px;height:auto;background:linear-gradient(180deg, transparent 0%, rgba(217,168,117,0.4) 100%);border-radius:16px;padding:0;box-sizing:border-box;box-shadow:0 25px 80px rgba(0,0,0,0.5);
   }
-  header{display:flex;align-items:center;gap:20px;flex-direction:row;justify-content:space-between;text-align:center;padding:18px 25px;background:rgba(45,27,78,0.8);border-bottom:2px solid rgba(255,255,100,0.25);min-height:auto;border-radius:16px 16px 0 0;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
-  header h1{font-size:1rem;margin:0;color:#fff;font-weight:700;letter-spacing:0;text-shadow:none}
-  header .badge{background:#ffff66;color:#2d1b4e;padding:10px 16px;border-radius:8px;font-weight:900;margin-left:auto;font-size:1rem;box-shadow:0 4px 12px rgba(255,255,100,0.3)}
+  header{display:flex;align-items:center;gap:10px;flex-direction:row;justify-content:space-between;text-align:center;padding:14px 16px;background:rgba(45,27,78,0.8);border-bottom:2px solid rgba(255,255,100,0.25);min-height:auto;border-radius:16px 16px 0 0;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
+  header h1{font-size:0.9rem;margin:0;color:#fff;font-weight:700;letter-spacing:0;text-shadow:none}
+  header .badge{background:#ffff66;color:#2d1b4e;padding:8px 12px;border-radius:8px;font-weight:900;margin-left:auto;font-size:0.85rem;box-shadow:0 4px 12px rgba(255,255,100,0.3);white-space:nowrap}
   p.lead{display:none}
   h1{font-size:1.2rem;margin:0;color:#fff;font-weight:800;letter-spacing:-0.5px;text-shadow:2px 2px 4px rgba(0,0,0,0.3)}
   p.lead{margin:0;color:#fff;font-size:0.85rem;line-height:1.3;text-shadow:1px 1px 2px rgba(0,0,0,0.2)}
 
   main{margin-top:0;display:flex;flex-direction:column;gap:0;align-items:stretch;position:relative;padding:0}
 
-  /* Grid of boxes - bigger and professional */
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:40px;background:rgba(45,27,78,0.95);border-radius:8px;border:2px solid rgba(255,255,100,0.15);aspect-ratio:1.3;position:relative;box-shadow:0 15px 40px rgba(0,0,0,0.3)}
+  /* Grid of boxes - mobile optimized */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:16px;background:rgba(45,27,78,0.95);border-radius:8px;border:2px solid rgba(255,255,100,0.15);aspect-ratio:1.2;position:relative;box-shadow:0 15px 40px rgba(0,0,0,0.3)}
 
   .box{
-    background:linear-gradient(135deg, rgba(45,27,78,0.98), rgba(70,40,90,0.95));border-radius:16px;padding:0;min-height:auto;display:flex;align-items:center;justify-content:center;text-align:center;
+    background:linear-gradient(135deg, rgba(45,27,78,0.98), rgba(70,40,90,0.95));border-radius:12px;padding:0;min-height:auto;display:flex;align-items:center;justify-content:center;text-align:center;
     cursor:pointer;user-select:none;border:2px solid rgba(255,255,255,0.25);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
     position:relative;overflow:hidden;aspect-ratio:1;box-shadow:0 12px 30px rgba(0,0,0,0.4);
   }
@@ -59,8 +59,19 @@
     text-shadow:0 0 10px rgba(34,197,94,0.8);
   }
   
+  /* Wrong answer box styling */
+  .box.answered-wrong{
+    background:linear-gradient(135deg, #ef4444, #dc2626);
+    border-color:#ef4444;
+    box-shadow:0 12px 30px rgba(239,68,68,0.5);
+  }
+  .box.answered-wrong .num{
+    color:#fff;
+    text-shadow:0 0 10px rgba(239,68,68,0.8);
+  }
+  
   .box div{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%}
-  .box .num{font-weight:900;color:#ffff66;font-size:1.8rem;text-shadow:0 0 15px rgba(255,255,100,0.7);letter-spacing:1px}
+  .box .num{font-weight:900;color:#ffff66;font-size:1.4rem;text-shadow:0 0 15px rgba(255,255,100,0.7);letter-spacing:1px}
   .box .state{font-size:0.65rem;margin-top:4px;color:#c0e8ff;font-weight:600;display:none}
 
   /* moving highlight animation with yellow glow */
@@ -97,6 +108,25 @@
   .question-progress-header{
     display:flex;justify-content:center;align-items:center;margin-bottom:30px;gap:0;padding:12px 24px;background:linear-gradient(135deg, #2d1b4e, #3d2b5e);border-radius:10px;font-size:1.5rem;color:#ffff66;font-weight:900;border:2px solid rgba(255,255,100,0.4);box-shadow:0 6px 20px rgba(0,0,0,0.3);text-align:center;letter-spacing:2px;width:auto;
   }
+
+  /* Timer styling */
+  .timer-display{
+    display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 14px;background:linear-gradient(135deg, #ef4444, #dc2626);border-radius:8px;font-size:1rem;color:#fff;font-weight:900;border:2px solid rgba(255,255,255,0.3);box-shadow:0 6px 20px rgba(239,68,68,0.5);text-align:center;min-width:auto;
+  }
+  .timer-display.warning{
+    background:linear-gradient(135deg, #f97316, #ea580c);
+    box-shadow:0 6px 20px rgba(249,115,22,0.5);
+    animation:timer-pulse 1s ease-in-out infinite;
+  }
+  .timer-display.critical{
+    background:linear-gradient(135deg, #ef4444, #dc2626);
+    animation:timer-pulse 0.5s ease-in-out infinite;
+  }
+  @keyframes timer-pulse{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.1)}
+  }
+  .timer-icon{font-size:1.1rem}
 
   .question-progress{
     background:linear-gradient(135deg, #2d1b4e, #3d2b5e);padding:8px 16px;border-radius:8px;font-size:1.1rem;color:#ffff66;font-weight:800;border:2px solid rgba(255,255,100,0.4);box-shadow:0 4px 12px rgba(0,0,0,0.2);
@@ -337,6 +367,10 @@
   <div id="page-question" class="page page-question">
     <div class="question-progress-header">
       <span id="q-progress">1</span> / <span id="q-total">10</span>
+      <div class="timer-display" id="timerDisplay">
+        <span class="timer-icon">⏱</span>
+        <span id="timerText">30</span>s
+      </div>
     </div>
 
     <div class="question-container">
@@ -345,11 +379,6 @@
       <div class="choices-container">
         <button class="choice-btn" data-val="true">✓ True</button>
         <button class="choice-btn" data-val="false">✗ False</button>
-      </div>
-
-      <div class="button-group">
-        <button id="submitBtn" class="btn">Submit Answer</button>
-        <button id="cancelBtn" class="btn ghost">Skip</button>
       </div>
 
       <div id="explanation" class="explain" style="display:none"></div>
@@ -389,7 +418,11 @@
     let score = 0;
     let cycleIndex = 0;
     let cycleInterval = null;
+    let timerInterval = null;
+    let timeRemaining = 30;
+    const TIME_PER_QUESTION = 30; // 30 seconds per question
     let selected = null;
+    let correctAnswers = new Array(TOTAL).fill(null); // Track correct/incorrect for each question
 
     /* ===== DOM ELEMENTS ===== */
     const pageHome = document.getElementById('page-home');
@@ -410,6 +443,8 @@
     const overlay = document.getElementById('overlay');
     const finalScore = document.getElementById('finalScore');
     const finalMessage = document.getElementById('finalMessage');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const timerText = document.getElementById('timerText');
     const levelBadge = document.getElementById('levelBadge');
     const restartBtn = document.getElementById('restartBtn');
     const startBtn = document.getElementById('startBtn');
@@ -433,7 +468,18 @@
       for(let i = 0; i < TOTAL; i++){
         const box = document.createElement('div');
         box.className = 'box';
-        if(answered[i]) box.classList.add('answered');
+        
+        // Check if answered and apply correct color
+        if(answered[i]) {
+          // Determine if answer was correct by checking stored results
+          const isCorrect = correctAnswers[i]; // We'll store this separately
+          if(isCorrect === true) {
+            box.classList.add('answered');
+          } else if(isCorrect === false) {
+            box.classList.add('answered-wrong');
+          }
+        }
+        
         box.setAttribute('role', 'button');
         box.setAttribute('tabindex', '0');
         box.dataset.idx = i;
@@ -471,10 +517,64 @@
       }
     }
 
+    /* ===== TIMER FUNCTIONS ===== */
+    function startTimer(){
+      stopTimer();
+      timeRemaining = TIME_PER_QUESTION;
+      updateTimerDisplay();
+      
+      timerInterval = setInterval(() => {
+        timeRemaining--;
+        updateTimerDisplay();
+        
+        if(timeRemaining <= 0) {
+          stopTimer();
+          // Auto-answer as incorrect if time runs out
+          autoSubmitIncorrectAnswer();
+        }
+      }, 1000);
+    }
+
+    function stopTimer(){
+      if(timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    function updateTimerDisplay(){
+      timerText.textContent = timeRemaining;
+      
+      // Update timer styling based on time remaining
+      timerDisplay.classList.remove('warning', 'critical');
+      if(timeRemaining <= 5) {
+        timerDisplay.classList.add('critical');
+      } else if(timeRemaining <= 10) {
+        timerDisplay.classList.add('warning');
+      }
+    }
+
+    function autoSubmitIncorrectAnswer(){
+      // Mark as incorrect and show explanation
+      answered[currentIdx] = true;
+      correctAnswers[currentIdx] = false;
+      
+      const allBoxes = document.querySelectorAll('.box');
+      allBoxes[currentIdx].classList.add('answered-wrong');
+      allBoxes[currentIdx].classList.remove('answered');
+      
+      explanation.innerHTML = `<strong style="color: #ef4444; font-size: 1.2rem; display: block; margin-bottom: 12px;">✗ TIME'S UP!</strong>Time ran out before you could answer.`;
+      explanation.style.display = 'block';
+      
+      continueBtn.style.display = 'inline-block';
+      choiceBtns.forEach(b => b.style.pointerEvents = 'none');
+    }
+
     /* ===== OPEN QUESTION PAGE ===== */
     function openQuestion(idx){
       if(answered[idx]) return;
       stopCycle();
+      startTimer();
       currentIdx = idx;
       selected = null;
       
@@ -483,22 +583,58 @@
       
       choiceBtns.forEach(btn => {
         btn.classList.remove('selected');
+        btn.style.pointerEvents = 'auto';
         btn.onclick = () => {
+          // Stop the timer when answer is selected
+          stopTimer();
+          
+          // Immediately evaluate answer
+          const userAnswer = btn.dataset.val === 'true';
+          const isCorrect = userAnswer === QUESTIONS[idx].a;
+          
+          // Mark as answered and store result
+          answered[idx] = true;
+          correctAnswers[idx] = isCorrect; // Store whether answer was correct
+          
+          // Update score if correct
+          if(isCorrect) score++;
+          
+          // Apply styling to the box - query all boxes and update the one we answered
+          const allBoxes = document.querySelectorAll('.box');
+          if(isCorrect) {
+            allBoxes[idx].classList.add('answered');
+            allBoxes[idx].classList.remove('answered-wrong');
+          } else {
+            allBoxes[idx].classList.add('answered-wrong');
+            allBoxes[idx].classList.remove('answered');
+          }
+          
+          // Show explanation immediately
+          const resultText = isCorrect ? '✓ CORRECT!' : '✗ INCORRECT';
+          explanation.innerHTML = `<strong style="color: ${isCorrect ? '#22c55e' : '#ef4444'}; font-size: 1.2rem; display: block; margin-bottom: 12px;">${resultText}</strong>${QUESTIONS[idx].explain}`;
+          explanation.style.display = 'block';
+          
+          // Show continue button
+          continueBtn.style.display = 'inline-block';
+          
+          // Update score display
+          scoreEl.textContent = score;
+          
+          // Disable all buttons after answer
+          choiceBtns.forEach(b => b.style.pointerEvents = 'none');
           choiceBtns.forEach(b => b.classList.remove('selected'));
           btn.classList.add('selected');
-          selected = btn.dataset.val === 'true';
         };
       });
       
       explanation.style.display = 'none';
       continueBtn.style.display = 'none';
-      submitBtn.style.display = 'inline-block';
-      cancelBtn.style.display = 'inline-block';
       
-      submitBtn.onclick = submitAnswer;
-      cancelBtn.onclick = () => {
+      continueBtn.onclick = () => {
         showPage(pageHome);
+        buildGrid();
         startCycle();
+        nextQuestion();
       };
       
       showPage(pageQuestion);
@@ -574,6 +710,7 @@
     function restartGame(){
       currentIdx = 0;
       answered = new Array(TOTAL).fill(false);
+      correctAnswers = new Array(TOTAL).fill(null); // Reset correct answers tracking
       score = 0;
       selected = null;
       
