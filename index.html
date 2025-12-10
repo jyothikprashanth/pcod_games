@@ -31,6 +31,14 @@
   header{display:flex;align-items:center;gap:10px;flex-direction:row;justify-content:space-between;text-align:center;padding:10px 12px;background:rgba(45,27,78,0.8);border-bottom:2px solid rgba(255,255,100,0.25);min-height:auto;border-radius:8px 8px 0 0;box-shadow:0 4px 15px rgba(0,0,0,0.2);box-sizing:border-box;}
   header h1{font-size:0.9rem;margin:0;color:#fff;font-weight:700;letter-spacing:0;text-shadow:none}
   header .badge{background:#ffff66;color:#2d1b4e;padding:8px 12px;border-radius:8px;font-weight:900;margin-left:auto;font-size:0.85rem;box-shadow:0 4px 12px rgba(255,255,100,0.3);white-space:nowrap}
+  
+  /* Mute button styling */
+  #muteBtn{
+    background:rgba(255,255,255,0.15);color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:1.2rem;transition:all 0.3s ease;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;min-width:40px;min-height:40px;
+  }
+  #muteBtn:active{transform:scale(0.9)}
+  #muteBtn.muted{background:rgba(239,68,68,0.2);border-color:rgba(239,68,68,0.5)}
+  
   p.lead{display:none}
   h1{font-size:1.2rem;margin:0;color:#fff;font-weight:800;letter-spacing:-0.5px;text-shadow:2px 2px 4px rgba(0,0,0,0.3)}
   p.lead{margin:0;color:#fff;font-size:0.85rem;line-height:1.3;text-shadow:1px 1px 2px rgba(0,0,0,0.2)}
@@ -94,7 +102,7 @@
   /* Questions page - modal centered */
   .page-question{
     position:fixed;inset:0;background:linear-gradient(180deg, #d9a875 0%, #e89b59 50%, #d9a875 100%);
-    z-index:50;padding:12px;box-sizing:border-box;overflow-y:auto;display:none;flex-direction:column;align-items:center;justify-content:flex-start;
+    z-index:50;padding:12px;box-sizing:border-box;overflow-y:auto;display:none;flex-direction:column;align-items:center;justify-content:center;
   }
   .page-question.active{
     display:flex;
@@ -133,17 +141,17 @@
   }
 
   .question-container{
-    background:linear-gradient(135deg, rgba(45,27,78,0.9), rgba(70,40,90,0.85));border:2px solid rgba(255,255,255,0.15);border-radius:14px;padding:20px;max-width:95%;width:100%;max-height:auto;overflow-y:auto;box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,0.3);
+    background:linear-gradient(135deg, rgba(45,27,78,0.9), rgba(70,40,90,0.85));border:2px solid rgba(255,255,255,0.15);border-radius:14px;padding:35px;max-width:75%;width:auto;max-height:auto;overflow-y:auto;box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,0.3);
   }
 
   .question-text{
     color:#fff;font-size:1rem;line-height:1.6;margin-bottom:16px;font-weight:600;text-shadow:1px 1px 2px rgba(0,0,0,0.2);
   }
 
-  .choices-container{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+  .choices-container{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;max-width:100%;width:100%;align-items:center;}
   
   .choice-btn{
-    padding:14px 16px;border-radius:10px;border:none;background:linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));color:#fff;font-weight:800;font-size:0.95rem;cursor:pointer;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);text-align:center;box-shadow:0 6px 20px rgba(0,0,0,0.25);text-transform:uppercase;letter-spacing:0.5px;
+    padding:10px 12px;border-radius:8px;border:none;background:linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));color:#fff;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.2);text-transform:uppercase;letter-spacing:0.3px;width:100%;max-width:300px;
   }
 
   .choice-btn:active{transform:scale(0.95)}
@@ -353,6 +361,7 @@
       <header>
         <h1>Score</h1>
         <div class="badge"><span id="score">0</span> / <span id="total">10</span></div>
+        <button id="muteBtn" title="Toggle Sound">🔊</button>
       </header>
 
       <main>
@@ -398,6 +407,203 @@
   </div>
 
   <script>
+    /* ===== AUDIO SYSTEM ===== */
+    let isMuted = false;
+    let audioContext = null;
+    
+    // Initialize audio context
+    function initAudioContext() {
+      if(!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return audioContext;
+    }
+    
+    function playCorrectSound() {
+      if(isMuted) return;
+      try {
+        const ctx = initAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        const now = ctx.currentTime;
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.linearRampToValueAtTime(800, now + 0.2);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+        
+        osc.start(now);
+        osc.stop(now + 0.2);
+      } catch(e) { 
+        console.log('Correct sound error:', e); 
+      }
+    }
+    
+    function playWrongSound() {
+      if(isMuted) return;
+      try {
+        const ctx = initAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        const now = ctx.currentTime;
+        osc.frequency.setValueAtTime(300, now);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+        
+        osc.start(now);
+        osc.stop(now + 0.4);
+      } catch(e) { 
+        console.log('Wrong sound error:', e); 
+      }
+    }
+    
+    function playTimeupSound() {
+      if(isMuted) return;
+      try {
+        const ctx = initAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        const now = ctx.currentTime;
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.linearRampToValueAtTime(300, now + 0.4);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+        
+        osc.start(now);
+        osc.stop(now + 0.4);
+      } catch(e) { 
+        console.log('Timeup sound error:', e); 
+      }
+    }
+    
+    function playWarningSound() {
+      if(isMuted) return;
+      try {
+        const ctx = initAudioContext();
+        
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        const now = ctx.currentTime;
+        osc.frequency.setValueAtTime(800, now);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+        
+        osc.start(now);
+        osc.stop(now + 0.15);
+        
+        // Second beep
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        
+        osc2.frequency.setValueAtTime(800, now + 0.2);
+        gain2.gain.setValueAtTime(0.25, now + 0.2);
+        gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+        
+        osc2.start(now + 0.2);
+        osc2.stop(now + 0.35);
+      } catch(e) { 
+        console.log('Warning sound error:', e); 
+      }
+    }
+    
+    let bgMusicLoop = null;
+    let isBgMusicPlaying = false;
+    
+    function playBackgroundMusic() {
+      if(isMuted || isBgMusicPlaying) return;
+      try {
+        isBgMusicPlaying = true;
+        const ctx = initAudioContext();
+        // Energetic upbeat melody - G major scale with rhythm
+        const notes = [392, 392, 440, 494, 523, 494, 440, 392, 349, 392, 440, 523, 494, 440, 392, 440]; // G major energetic pattern
+        let noteIndex = 0;
+        
+        function playLoopingNotes() {
+          if(isMuted) {
+            isBgMusicPlaying = false;
+            return;
+          }
+          
+          const ctx = initAudioContext();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          
+          const now = ctx.currentTime;
+          const currentNote = notes[noteIndex % notes.length];
+          osc.frequency.setValueAtTime(currentNote, now);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          
+          osc.start(now);
+          osc.stop(now + 0.25);
+          
+          noteIndex++;
+          bgMusicLoop = setTimeout(playLoopingNotes, 300);
+        }
+        
+        playLoopingNotes();
+      } catch(e) { 
+        console.log('Background music error:', e); 
+        isBgMusicPlaying = false;
+      }
+    }
+    
+    function stopBackgroundMusic() {
+      isBgMusicPlaying = false;
+      if(bgMusicLoop) {
+        clearTimeout(bgMusicLoop);
+        bgMusicLoop = null;
+      }
+    }
+    
+    let timerWarningPlayed = false;
+    
+    // Helper function to play sounds
+    function playSound(soundType) {
+      console.log('Playing sound:', soundType);
+      if(soundType === 'correct') {
+        playCorrectSound();
+      } else if(soundType === 'wrong') {
+        playWrongSound();
+      } else if(soundType === 'timeup') {
+        playTimeupSound();
+      } else if(soundType === 'warning') {
+        playWarningSound();
+      } else if(soundType === 'bgmusic') {
+        playBackgroundMusic();
+      }
+    }
+    
+    // Mute button handler
+    document.getElementById('muteBtn').addEventListener('click', () => {
+      isMuted = !isMuted;
+      const muteBtn = document.getElementById('muteBtn');
+      muteBtn.textContent = isMuted ? '🔇' : '🔊';
+      muteBtn.classList.toggle('muted');
+    });
+    
+    // Resume audio context on user interaction
+    document.addEventListener('click', () => {
+      if(audioContext && audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    });
+
     /* ===== QUESTIONS DATA ===== */
     const QUESTIONS = [
       { q: "PCOD affects only women in their reproductive years.", a: false, explain: "PCOD can develop at any age after puberty, including during menopause. Symptoms and severity may vary across different life stages." },
@@ -541,9 +747,15 @@
         timerInterval = null;
       }
     }
-
+    
     function updateTimerDisplay(){
       timerText.textContent = timeRemaining;
+      
+      // Play warning sound at 5 seconds
+      if(timeRemaining === 5 && !timerWarningPlayed && !isMuted) {
+        timerWarningPlayed = true;
+        playSound('warning');
+      }
       
       // Update timer styling based on time remaining
       timerDisplay.classList.remove('warning', 'critical');
@@ -555,6 +767,9 @@
     }
 
     function autoSubmitIncorrectAnswer(){
+      // Play timeup sound
+      playSound('timeup');
+      
       // Mark as incorrect and show explanation
       answered[currentIdx] = true;
       correctAnswers[currentIdx] = false;
@@ -574,6 +789,7 @@
     function openQuestion(idx){
       if(answered[idx]) return;
       stopCycle();
+      timerWarningPlayed = false; // Reset warning flag for new question
       startTimer();
       currentIdx = idx;
       selected = null;
@@ -591,6 +807,13 @@
           // Immediately evaluate answer
           const userAnswer = btn.dataset.val === 'true';
           const isCorrect = userAnswer === QUESTIONS[idx].a;
+          
+          // Play sound based on answer
+          if(isCorrect) {
+            playSound('correct');
+          } else {
+            playSound('wrong');
+          }
           
           // Mark as answered and store result
           answered[idx] = true;
@@ -719,6 +942,7 @@
       buildGrid();
       showPage(pageHome);
       startCycle();
+      playSound('bgmusic');
     }
 
     restartBtn.onclick = restartGame;
@@ -739,6 +963,7 @@
       buildGrid();
       showPage(pageHome);
       startCycle();
+      playSound('bgmusic');
     };
 
     if(rulesBtn) rulesBtn.onclick = () => {
